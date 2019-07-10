@@ -1,9 +1,18 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: emre
+ * User: Evosis
  * Date: 23.11.2017
  * Time: 14:49
+ *
+ * 2019-07-05 1.14
+ * add checkNationalityId
+ * fix getCityTaxAdminsArray
+ * add getCityTaxAdminsArray
+ *
+ * 2019-07-10 1.16
+ * add checkTaxNumber
+ *
  */
 
 class evoEngineLib4Turkey{
@@ -188,7 +197,6 @@ class evoEngineLib4Turkey{
     }
 
     public function nationalityIdCheck($numberOfTC){
-
         $return = false;
 
         //onbir haneyse ve rakam ise isleme devam et
@@ -211,12 +219,41 @@ class evoEngineLib4Turkey{
         return($return);
     }
 
+    public function checkTaxNumber($numberOfTax){
+        $return = false;
+
+        if ( strlen($numberOfTax) == 10 AND is_numeric($numberOfTax) == true){
+
+            $numberOfTaxArray = str_split($numberOfTax);  //basamaklarına ayır
+            $total = 0; $operation = array();
+
+            for($i= 0; $i <= 8; $i++){
+                //Vergi numarasının ilk 9 rakamına sırayla 10 eklenip sıra değeri (en büyük basamak değeri 1 ve en küçük basamak değeri 9 kabul edilir) çıkarılır, çıkan sonucun modül 10'a göre değeri alınır.
+                $operation[$i] = fmod( ($numberOfTaxArray[$i] + 10 -($i+1) ), 10 );
+
+                //Elde edilen değer 9 ise bir işlem yapmadan bırakılır. 9 dan farklı bir rakam elde edildi ise değer 2'nin 10 eksi sıra değeri kuvveti ile çarpılıp, modül 9 a göre değeri ele alınır.
+                if($operation[$i] == 9){
+                    $total = $total + $operation[$i];
+                }else{
+                    $total = $total + fmod($operation[$i] * (2**(10 - ($i+1)) ),9);
+                }
+            }
+
+            //Elde ettiğimiz rakam 10 dan çıkarılır ve tekrar modül 10'a göre değeri vergi numaramızın 10. rakamımızı verir.
+            $total = fmod(( 10 - fmod($total,10) ),10);
+
+            if($numberOfTaxArray[9] == $total){
+                $return=true;
+            }
+        }
+        return($return);
+    }
 
     function version(){
         return ("evoEngine Library For Turkey Versiyon : ".$this->versionNo());
     }
 
     public function versionNo(){
-        return ("1.1.14");
+        return ("1.1.16");
     }
 }
