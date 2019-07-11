@@ -256,11 +256,11 @@ class evoEngineLib4Turkey{
 
     public function checkTaxOrTC($numberOfTaxOrTC){
         $status['status'] = false;
-        if(strlen($numberOfTaxOrTC) == 10 AND $this->checkTaxNumber($_POST['numberCheck'])){
+        if(strlen($numberOfTaxOrTC) == 10 AND $this->checkTaxNumber($numberOfTaxOrTC)){
             $status['status']   = true;
             $status['text']     ='taxNumber';
         }
-        if(strlen($numberOfTaxOrTC) == 11 AND $this->checkNationalityId($_POST['numberCheck'])){
+        if(strlen($numberOfTaxOrTC) == 11 AND $this->checkNationalityId($numberOfTaxOrTC)){
             $status['text']     ='TCNumber';
             $status['status']   = true;
         }
@@ -272,6 +272,6 @@ class evoEngineLib4Turkey{
     }
 
     public function versionNo(){
-        return ("1.1.18");
+        return (1.18);
     }
 }
