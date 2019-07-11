@@ -23,5 +23,6 @@
 <li>Sürücü belgesi için getDriverLicence(Lisans Idsi gerekir)</li>
 <br>
 <b>Kontrol</b>
-<li>checkNationalityId() Fonksiyonuna TC kimlik numarası vererek numarasının doğruluk kontrolünü yapabilirsiniz.</li>
-<li>checkTaxNumber() Fonksiyonuna Verginumarası vererek numarasının doğruluk kontrolünü yapabilirsiniz.</li>
+<li>checkTaxOrTC();Return(Array); Fonksiyonuna Verginumarası yada TC kimlik vererek numarasının doğruluk kontrolünü yapabilirsiniz.</li>
+<li>checkNationalityId();Return(Boolean); Fonksiyonuna TC kimlik numarası vererek numarasının doğruluk kontrolünü yapabilirsiniz.</li>
+<li>checkTaxNumber();Return(Boolean); Fonksiyonuna Verginumarası vererek numarasının doğruluk kontrolünü yapabilirsiniz.</li>

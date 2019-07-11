@@ -8,11 +8,14 @@
  * 2019-07-05 1.14
  * add checkNationalityId
  * fix getCityTaxAdminsArray
- * add getCityTaxAdminsArray
+ * add getCityTaxAdminName
  *
  * 2019-07-10 1.16
  * add checkTaxNumber
  *
+ * 2019-07-11 1.18
+ * add checkTaxOrTC
+ * fix checkTaxNumber
  */
 
 class evoEngineLib4Turkey{
@@ -196,7 +199,7 @@ class evoEngineLib4Turkey{
         return($return);
     }
 
-    public function nationalityIdCheck($numberOfTC){
+    public function checkNationalityId($numberOfTC){
         $return = false;
 
         //onbir haneyse ve rakam ise isleme devam et
@@ -222,20 +225,22 @@ class evoEngineLib4Turkey{
     public function checkTaxNumber($numberOfTax){
         $return = false;
 
+        //on hane ve rakam ise isleme devam et
         if ( strlen($numberOfTax) == 10 AND is_numeric($numberOfTax) == true){
 
             $numberOfTaxArray = str_split($numberOfTax);  //basamaklarına ayır
             $total = 0; $operation = array();
 
             for($i= 0; $i <= 8; $i++){
+                $numberCache = $i+1;
                 //Vergi numarasının ilk 9 rakamına sırayla 10 eklenip sıra değeri (en büyük basamak değeri 1 ve en küçük basamak değeri 9 kabul edilir) çıkarılır, çıkan sonucun modül 10'a göre değeri alınır.
-                $operation[$i] = fmod( ($numberOfTaxArray[$i] + 10 -($i+1) ), 10 );
+                $operation[$i] = fmod( ($numberOfTaxArray[$i] + 10 -($numberCache) ), 10 );
 
                 //Elde edilen değer 9 ise bir işlem yapmadan bırakılır. 9 dan farklı bir rakam elde edildi ise değer 2'nin 10 eksi sıra değeri kuvveti ile çarpılıp, modül 9 a göre değeri ele alınır.
                 if($operation[$i] == 9){
                     $total = $total + $operation[$i];
                 }else{
-                    $total = $total + fmod($operation[$i] * (2**(10 - ($i+1)) ),9);
+                    $total = $total + fmod($operation[$i] * (2**(10 - ($numberCache)) ),9);
                 }
             }
 
@@ -249,11 +254,24 @@ class evoEngineLib4Turkey{
         return($return);
     }
 
+    public function checkTaxOrTC($numberOfTaxOrTC){
+        $status['status'] = false;
+        if(strlen($numberOfTaxOrTC) == 10 AND $this->checkTaxNumber($_POST['numberCheck'])){
+            $status['status']   = true;
+            $status['text']     ='taxNumber';
+        }
+        if(strlen($numberOfTaxOrTC) == 11 AND $this->checkNationalityId($_POST['numberCheck'])){
+            $status['text']     ='TCNumber';
+            $status['status']   = true;
+        }
+        return($status);
+    }
+
     function version(){
         return ("evoEngine Library For Turkey Versiyon : ".$this->versionNo());
     }
 
     public function versionNo(){
-        return ("1.1.16");
+        return ("1.1.18");
     }
 }
